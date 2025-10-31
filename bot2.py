@@ -28,9 +28,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     result = agent.invoke(state_input, config=config)
     response = "⚠️ Sin respuesta."
 
-    for message in result["messages"]:
-        if "content" in message:
-            response = message["content"]
+# Verifica estructura
+    messages = result.get("messages", [])
+    for msg in messages:
+        # Si es un objeto tipo Message
+        if hasattr(msg, "content"):
+            response = msg.content
+        # Si es un diccionario plano
+        elif isinstance(msg, dict) and "content" in msg:
+            response = msg["content"]
 
     await update.message.reply_markdown(response)
 
