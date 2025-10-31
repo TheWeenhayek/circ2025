@@ -57,10 +57,10 @@ def triage_router(state: State, config, store=None) -> Command[
 def handle_btc_price(state: State, config):
     """Consulta el precio actual de BTC/USDT usando la API pública de Binance."""
     try:
-        resp = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT", timeout=10)
+        resp = requests.get("https://api.coinpaprika.com/v1/tickers/btc-bitcoin", timeout=10)
         resp.raise_for_status()
         data = resp.json()
-        price = data.get("price")
+        price = data.get("quotes", {}).get("USD", {}).get("price")
         if price:
             content = f"💰 El precio actual de *Bitcoin (BTC/USDT)* es **{price} USDT**."
         else:
